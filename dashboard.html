@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aashreys Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="habits">Habit Tracker</button>
+  </div>
+
+  <div class="tab-content" id="dashboardTab">
+  <!-- Top Row: Ticker + Stats -->
+  <div class="top-row">
+    <div class="ticker-row">
+      <div class="goal-ticker" id="goalTicker" aria-live="polite" aria-atomic="true">
+        <div class="goal-ticker-led"><span class="goal-ticker-led-dot"></span></div>
+        <div class="goal-ticker-label">GOALS</div>
+        <div class="goal-ticker-stage" id="goalTickerStage">
+          <div class="goal-ticker-row">
+            <span class="goal-ticker-status" data-status="">—</span>
+            <span class="goal-ticker-text">Loading…</span>
+          </div>
+        </div>
+        <div class="goal-ticker-meta" id="goalTickerMeta">0/0</div>
+      </div>
+    </div>
+
+    <div class="stats-card" id="weeklyStats">
+      <div class="stats-icon">📊</div>
+      <div class="stats-content">
+        <div class="stats-label">This Week</div>
+        <div class="stats-value" id="weeklyValue">0/0</div>
+        <div class="stats-percent" id="weeklyPercent">0%</div>
+      </div>
+      <div class="stats-week-grid" id="weeklyBar"></div>
+    </div>
+  </div>
+
+  <!-- Day Ring -->
+  <div class="day-ring-container">
+    <div class="ring-wrapper">
+      <svg class="day-ring-svg" viewBox="0 0 120 120">
+        <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+        <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52"></circle>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-percent" id="ringPercent">—</div>
+        <div class="ring-phase" id="ringPhase">SLEEPING</div>
+        <div class="ring-clock" id="ringClock">—</div>
+      </div>
+    </div>
+    <div class="ring-info">
+      <div class="ring-status" id="ringStatus">😴 Still sleeping</div>
+      <div class="ring-remaining" id="ringRemaining">—</div>
+      <div class="ring-hours" id="ringHours">6:00 AM – 10:00 PM</div>
+    </div>
+  </div>
+
+  <!-- To Do List -->
+  <div class="section">
+    <div class="section-title">To Do List</div>
+
+    <div class="card" id="todayCard">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-eyebrow" id="todayLabel">Today — {Sat, May 9}</div>
+          <div class="card-progress">
+            <span class="progress-num" id="progressNum">0</span>
+            <span class="progress-total" id="progressTotal">/ 0</span>
+            <span class="progress-label" id="progressLabel">no goals yet</span>
+          </div>
+        </div>
+        <div class="streak-pill" id="streakPill">
+          <span class="streak-icon">⚡</span>
+          <span class="streak-num" id="streakNum">0</span>
+          <span class="streak-label">day streak</span>
+        </div>
+      </div>
+
+      <div class="progress-bar" id="progressBar"></div>
+      <ul class="goal-list" id="goalList"></ul>
+      <div class="empty-state" id="emptyState">No goals for today yet — add one below.</div>
+      <button class="push-btn" id="pushBtn" style="display: none;">Push remaining to tomorrow →</button>
+
+      <div class="input-wrap">
+        <input type="text" class="goal-input" id="goalInput" placeholder="Add a goal for today…">
+        <button class="add-btn" id="addBtn">+ Add</button>
+      </div>
+      <div class="input-status" id="addStatus"></div>
+    </div>
+
+    <div class="card card-tomorrow" id="tomorrowCard">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-eyebrow" id="tomorrowLabel">Plan tomorrow — {Sun, May 10}</div>
+        </div>
+        <div class="tomorrow-count" id="tomorrowCount">0 planned</div>
+      </div>
+      <div class="tomorrow-sub">Write tonight, locked until 6 AM.</div>
+
+      <ul class="goal-list" id="tomorrowList"></ul>
+      <div class="empty-state" id="tomorrowEmpty">Nothing planned for tomorrow yet</div>
+
+      <div class="input-wrap">
+        <input type="text" class="goal-input" id="tomorrowInput" placeholder="Plan a goal for tomorrow…">
+        <button class="add-btn" id="tomorrowAddBtn">+ Add</button>
+      </div>
+      <div class="input-status" id="tomorrowStatus"></div>
+    </div>
+  </div>
+
+  <!-- Quick Notes -->
+  <div class="section">
+    <div class="section-title">Quick Notes</div>
+    <div class="card notes-card">
+      <textarea class="notes-textarea" id="notes" placeholder="Write your thoughts, ideas, or reminders here..."></textarea>
+    </div>
+  </div>
+
+  <!-- Achievements -->
+  <div class="section">
+    <div class="section-title">🏆 Achievements</div>
+    <div class="card">
+      <div class="ach-count" id="achCount" style="margin-bottom: 12px; font-size: 13px; color: var(--text-tertiary);">0/7 unlocked</div>
+      <div class="ach-list" id="achList"></div>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Habit Tracker Tab -->
+  <div class="tab-content" id="habitsTab" style="display: none;">
+    <div class="section">
+      <div class="section-title">Daily Habits</div>
+      <div class="card">
+        <div class="habits-header">
+          <span class="habits-subtitle">Track your daily habits</span>
+          <button class="reset-week-btn" id="resetWeekBtn">Reset This Week</button>
+        </div>
+        <div class="habits-grid" id="habitsGrid"></div>
+        <div class="habit-streak-info" id="habitStreakInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
