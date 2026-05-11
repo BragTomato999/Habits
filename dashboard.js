@@ -479,6 +479,65 @@ function resetWeekHabits() {
   renderHabits();
 }
 
+// Remainder System for Habits
+function checkHabitsRemainder() {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const todayStr = now.toISOString().split('T')[0];
+
+  // Check if it's past bedtime warning (9 PM)
+  if (currentHour < 21) return null; // Before 9 PM
+
+  // Check if user already dismissed remainder today
+  const dismissedDate = storeGet('remainder_dismissed');
+  if (dismissedDate === todayStr) return null;
+
+  const habits = getHabits();
+  const incomplete = [];
+
+  HABITS.forEach(habit => {
+    const habitData = habits[habit.id] || [];
+    if (!habitData.includes(todayStr)) {
+      incomplete.push(habit);
+    }
+  });
+
+  return incomplete.length > 0 ? incomplete : null;
+}
+
+function renderHabitsRemainder() {
+  const container = document.getElementById('habitsRemainder');
+  if (!container) return;
+
+  const incomplete = checkHabitsRemainder();
+
+  if (!incomplete) {
+    container.style.display = 'none';
+    return;
+  }
+
+  const habitList = incomplete.map(h => `${h.icon} ${h.name}`).join(', ');
+
+  container.innerHTML = `
+    <div class="remainder-banner">
+      <div class="remainder-icon">⏰</div>
+      <div class="remainder-content">
+        <div class="remainder-title">Time's running out!</div>
+        <div class="remainder-text">You still have ${incomplete.length} habit${incomplete.length > 1 ? 's' : ''} left: ${habitList}</div>
+      </div>
+      <button class="remainder-dismiss" id="remainderDismiss">✓</button>
+    </div>
+  `;
+
+  container.style.display = 'block';
+
+  // Add dismiss handler
+  container.querySelector('#remainderDismiss').addEventListener('click', () => {
+    container.style.display = 'none';
+    storeSet('remainder_dismissed', new Date().toISOString().split('T')[0]);
+  });
+}
+
 // Tab Navigation
 function initTabs() {
   const tabBtns = document.querySelectorAll('.tab-btn');
@@ -503,5 +562,32 @@ function initTabs() {
 }
 
 document.getElementById('resetWeekBtn').addEventListener('click', resetWeekHabits);
+
+// Check remainder when tab switches to habits
+const originalInitTabs = initTabs;
+initTabs = function() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const savedTab = storeGet('active_tab') || 'dashboard';
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('dashboardTab').style.display = tab === 'dashboard' ? 'block' : 'none';
+      document.getElementById('habitsTab').style.display = tab === 'habits' ? 'block' : 'none';
+      storeSet('active_tab', tab);
+      if (tab === 'habits') {
+        renderHabits();
+        renderHabitsRemainder();
+      }
+    });
+  });
+
+  // Set initial state
+  tabBtns.forEach(btn => {
+    if (btn.dataset.tab === savedTab) btn.click();
+  });
+};
 
 init();

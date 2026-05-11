@@ -465,3 +465,50 @@ body { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; position: rel
 .habit-day:hover { transform: scale(1.1); }
 
 .habit-streak-info { margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 12px; font-size: 12px; color: var(--text-tertiary); }
+
+#habitsRemainder { margin-bottom: 16px; }
+
+.remainder-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(242,192,99,0.12) 0%, rgba(242,192,99,0.04) 100%);
+  border: 1px solid rgba(242,192,99,0.25);
+  border-radius: 14px;
+  animation: remainderSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes remainderSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.remainder-icon { font-size: 22px; flex-shrink: 0; }
+
+.remainder-content { flex: 1; min-width: 0; }
+
+.remainder-title { font-size: 13px; font-weight: 700; color: var(--warning); margin-bottom: 2px; }
+
+.remainder-text { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+
+.remainder-dismiss {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(242,192,99,0.3);
+  background: rgba(242,192,99,0.1);
+  color: var(--warning);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.remainder-dismiss:hover {
+  background: var(--warning);
+  color: #050506;
+}
